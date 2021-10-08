@@ -1,0 +1,5 @@
+SOURCE_PATH=/path/to/example.com/public_html/
+DEST_PATH=/path/to/Backups/example.com/
+DATABASE_NAME=database_name
+DATABASE_USER=database_user
+DATABASE_PSW=database_password
