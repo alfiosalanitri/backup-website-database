@@ -11,7 +11,9 @@ NOTE: pass the database password to this script isn't safety. Create a database 
 
 
 # USAGE
-`./backup-website-database.sh /path/to/example.com/.backup-config`
+- `sudo chown -R /path/to/example.com`
+- `sudo chmod o-r /path/to/example.com/.backup-config`
+- `sudo ./backup-website-database.sh /path/to/example.com/.backup-config`
        
 # AUTHOR: 
 backup-website-database.sh is written by Alfio Salanitri www.alfiosalanitri.it and are licensed under the terms of the GNU General Public License, version 2 or higher. 
