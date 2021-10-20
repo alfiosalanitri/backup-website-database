@@ -6,7 +6,7 @@ DATABASE_NAME=$(awk -F'=' '/^DATABASE_NAME=/ { print $2}' $CONFIG_FILE)
 DATABASE_USER=$(awk -F'=' '/^DATABASE_USER=/ { print $2}' $CONFIG_FILE)
 DATABASE_PSW=$(awk -F'=' '/^DATABASE_PSW=/ { print $2}' $CONFIG_FILE)
 printf "Esportazione database in corso...\n"
-mysqldump -u$DATABASE_USER -p$DATABASE_PSW $DATABASE_NAME >/tmp/$DATABASE_NAME-dump.sql
+mysqldump --no-tablespaces -u$DATABASE_USER -p$DATABASE_PSW $DATABASE_NAME > /tmp/$DATABASE_NAME-dump.sql
 printf "Rimozione precedenti backup in corso...\n"
 rm ${DEST_PATH}backup-*
 printf "Creazione backup in corso...\n"
