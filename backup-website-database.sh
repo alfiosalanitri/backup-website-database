@@ -18,6 +18,10 @@
 # 
 # AUTHOR: 
 # backup-website-database.sh is written by Alfio Salanitri www.alfiosalanitri.it and are licensed under the MIT License.
+if [ ! "$1" ]; then
+  printf "Type the full/path/to/.backup-config file\n"
+  exit 1
+fi
 CONFIG_FILE=$1
 SOURCE_PATH=$(awk -F'=' '/^SOURCE_PATH=/ { print $2}' $CONFIG_FILE)
 DEST_PATH=$(awk -F'=' '/^DEST_PATH=/ { print $2}' $CONFIG_FILE)
