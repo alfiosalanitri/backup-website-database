@@ -14,6 +14,8 @@ Require root privileges.
 
 # USAGE
 - `sudo ./backup-website-database.sh /path/to/example.com/.backup-config`
+- or
+- `sudo ./backup-website-database.sh /path/to/example.com/.backup-config /path/to/example.com/.excluded`
        
 # AUTHOR: 
 backup-website-database.sh is written by Alfio Salanitri www.alfiosalanitri.it and are licensed under the MIT License.
