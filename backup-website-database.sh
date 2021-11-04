@@ -4,7 +4,9 @@
 # backup-website-database.sh - create a tar archive with databases and website
 #
 # SYNOPSIS
-#	sudo ./backup-website-database.sh /path/to/example.com/.backup-config
+#	- sudo ./backup-website-database.sh /path/to/example.com/.backup-config
+# - or
+# - sudo ./backup-website-database.sh /path/to/example.com/.backup-config /path/to/example.com/.excluded
 #
 # DESCRIPTION
 # This script dump the database and create a tar archive from source into destination with database e files.
@@ -35,7 +37,17 @@ if [ -f "${DEST_PATH}backup-*" ]; then
   rm ${DEST_PATH}backup-*
 fi
 printf "Saving new backup...\n"
-tar cJfP ${DEST_PATH}backup-$(date +%d%m%Y-%H%M).tar.xz $SOURCE_PATH /tmp/$DATABASE_NAME-dump.sql
+# check files or folder to exclude
+if [ -z "$2" ]; then
+  tar cJfP ${DEST_PATH}backup-$(date +%d%m%Y-%H%M).tar.xz $SOURCE_PATH /tmp/$DATABASE_NAME-dump.sql
+else
+  # check if excluded file exists
+  if [ ! -f "$2" ]; then
+    printf "Sorry, but %s file doesn't exists.\n" $2
+    exit 1
+  fi
+  tar cJfP ${DEST_PATH}backup-$(date +%d%m%Y-%H%M).tar.xz -X $2 $SOURCE_PATH /tmp/$DATABASE_NAME-dump.sql
+fi
 printf "Cleaning temp files...\n"
 rm /tmp/$DATABASE_NAME-dump.sql
 printf "Backup Saved with success!\n"
