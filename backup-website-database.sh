@@ -30,13 +30,16 @@ DEST_PATH=$(awk -F'=' '/^DEST_PATH=/ { print $2}' $CONFIG_FILE)
 DATABASE_NAME=$(awk -F'=' '/^DATABASE_NAME=/ { print $2}' $CONFIG_FILE)
 DATABASE_USER=$(awk -F'=' '/^DATABASE_USER=/ { print $2}' $CONFIG_FILE)
 DATABASE_PSW=$(awk -F'=' '/^DATABASE_PSW=/ { print $2}' $CONFIG_FILE)
-printf "Dumping mysql...\n"
+printf "[ ] Dumping mysql...\n"
 mysqldump --no-tablespaces -u$DATABASE_USER -p$DATABASE_PSW $DATABASE_NAME >/tmp/$DATABASE_NAME-dump.sql
-if [ -f "${DEST_PATH}backup-*" ]; then
-  printf "Deleting preview backup...\n"
+printf "[x] Database saved!\n\n"
+if ls ${DEST_PATH}backup-*.tar.xz &>/dev/null 
+then
+  printf "[ ] Deleting previews backup...\n"
   rm ${DEST_PATH}backup-*
+  printf "[x] Previews backup deleted.\n\n"
 fi
-printf "Saving new backup...\n"
+printf "[ ] Saving new backup...\n"
 # check files or folder to exclude
 if [ -z "$2" ]; then
   tar cJfP ${DEST_PATH}backup-$(date +%d%m%Y-%H%M).tar.xz $SOURCE_PATH /tmp/$DATABASE_NAME-dump.sql
@@ -48,7 +51,9 @@ else
   fi
   tar cJfP ${DEST_PATH}backup-$(date +%d%m%Y-%H%M).tar.xz -X $2 $SOURCE_PATH /tmp/$DATABASE_NAME-dump.sql
 fi
-printf "Cleaning temp files...\n"
+printf "[x] Backup file saved.\n\n"
+printf "[ ] Cleaning temp files...\n"
 rm /tmp/$DATABASE_NAME-dump.sql
-printf "Backup Saved with success!\n"
+printf "[x] Temp files deleted.\n\n\n"
+printf "Backup completed with success!\n"
 exit 1
