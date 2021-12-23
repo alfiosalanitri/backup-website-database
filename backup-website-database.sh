@@ -4,7 +4,7 @@
 # backup-website-database.sh - create a tar archive with database dump and website files
 #
 # SYNOPSIS
-#	- /path/to/backup-website-database.sh /path/to/backups/example.com/.backup-config
+#	/path/to/backup-website-database.sh /path/to/backups/example.com/.backup-config
 #
 # DESCRIPTION
 # This script dump the database and create a tar archive from source into destination with database e files.
