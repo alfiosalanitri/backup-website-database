@@ -64,4 +64,4 @@ printf "[x] Temp files deleted.\n"
 echo "----------------"
 echo ""
 printf "[x] Backup completed with success!\n"
-exit 1
+exit 0
