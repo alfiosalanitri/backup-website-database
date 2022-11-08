@@ -23,17 +23,17 @@ if [ ! -f "$1" ]; then
   printf "Type the full/path/to/.backup-config file\n"
   exit 1
 fi
-CONFIG_FILE=$1
-SOURCE_PATH=$(awk -F'=' '/^SOURCE_PATH=/ { print $2}' $CONFIG_FILE)
-DEST_PATH=$(awk -F'=' '/^DEST_PATH=/ { print $2}' $CONFIG_FILE)
-EXCLUDED=''
+readonly CONFIG_FILE=$1
+readonly SOURCE_PATH=$(awk -F'=' '/^SOURCE_PATH=/ { print $2}' $CONFIG_FILE)
+readonly DEST_PATH=$(awk -F'=' '/^DEST_PATH=/ { print $2}' $CONFIG_FILE)
+excluded=''
 #if .excluded file exists into backup destination directory
 if [ -f "${DEST_PATH}.excluded" ]; then
-  EXCLUDED="-X ${DEST_PATH}.excluded"
+  excluded="-X ${DEST_PATH}.excluded"
 fi
-DATABASE_NAME=$(awk -F'=' '/^DATABASE_NAME=/ { print $2}' $CONFIG_FILE)
-DATABASE_USER=$(awk -F'=' '/^DATABASE_USER=/ { print $2}' $CONFIG_FILE)
-DATABASE_PSW=$(awk -F'=' '/^DATABASE_PSW=/ { print $2}' $CONFIG_FILE)
+readonly DATABASE_NAME=$(awk -F'=' '/^DATABASE_NAME=/ { print $2}' $CONFIG_FILE)
+readonly DATABASE_USER=$(awk -F'=' '/^DATABASE_USER=/ { print $2}' $CONFIG_FILE)
+readonly DATABASE_PSW=$(awk -F'=' '/^DATABASE_PSW=/ { print $2}' $CONFIG_FILE)
 echo "--- Step 1/4 ---"
 printf "[ ] Dumping mysql...\n"
 mysqldump --no-tablespaces -u$DATABASE_USER -p$DATABASE_PSW $DATABASE_NAME > /tmp/$DATABASE_NAME-dump.sql
@@ -53,7 +53,7 @@ echo "----------------"
 echo ""
 echo "--- Step 3/4 ---"
 printf "[ ] Saving new backup... (this operation will take some minutes)\n"
-tar cJfP ${DEST_PATH}backup-$(date +%d%m%Y-%H%M).tar.xz $EXCLUDED $SOURCE_PATH /tmp/$DATABASE_NAME-dump.sql
+tar cJfP ${DEST_PATH}backup-$(date +%d%m%Y-%H%M).tar.xz $excluded $SOURCE_PATH /tmp/$DATABASE_NAME-dump.sql
 printf "[x] Backup file saved.\n"
 echo "----------------"
 echo ""
