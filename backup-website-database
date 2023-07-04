@@ -34,9 +34,18 @@ fi
 readonly DATABASE_NAME=$(awk -F'=' '/^DATABASE_NAME=/ { print $2}' $CONFIG_FILE)
 readonly DATABASE_USER=$(awk -F'=' '/^DATABASE_USER=/ { print $2}' $CONFIG_FILE)
 readonly DATABASE_PSW=$(awk -F'=' '/^DATABASE_PSW=/ { print $2}' $CONFIG_FILE)
+readonly DATABASE_HOST=$(awk -F'=' '/^DATABASE_HOST=/ { print $2}' $CONFIG_FILE)
+readonly DATABASE_PORT=$(awk -F'=' '/^DATABASE_PORT=/ { print $2}' $CONFIG_FILE)
+db_dump_args="--no-tablespaces"
+# fix mariadb mysqldump Couldn't execute 'SELECT COLUMN_NAME, error
+MYSQL_SERVER=$(mysql -u$DATABASE_USER -p$DATABASE_PSW -h${DATABASE_HOST}:${DATABASE_PORT} -e "SELECT VERSION();" | grep -iF "maria")
+if [ "" != "$MYSQL_SERVER" ]; then
+  db_dump_args=" --column-statistics=0 --no-tablespaces"
+fi
+
 echo "--- Step 1/4 ---"
 printf "[ ] Dumping mysql...\n"
-mysqldump --no-tablespaces -u$DATABASE_USER -p$DATABASE_PSW $DATABASE_NAME > /tmp/$DATABASE_NAME-dump.sql
+mysqldump -u$DATABASE_USER -p$DATABASE_PSW -h${DATABASE_HOST}:${DATABASE_PORT}${db_dump_args} $DATABASE_NAME > /tmp/$DATABASE_NAME-dump.sql
 printf "[x] Database saved!\n"
 echo "----------------"
 echo ""
