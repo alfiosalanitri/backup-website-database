@@ -47,7 +47,7 @@ printf "[ ] Dumping mysql...\n"
 mysqldump -u$DATABASE_USER -p$DATABASE_PSW -h $DATABASE_HOST -P $DATABASE_PORT $db_dump_args $DATABASE_NAME > /tmp/$DATABASE_NAME-dump.sql
 check_dump=$(cat /tmp/$DATABASE_NAME-dump.sql | tail -1 | grep -iF "completed")
 if [ ""  == "$check_dump" ]; then
-  printf "[x] Dump database failed.\n
+  printf "[x] Dump database failed.\n"
   exit 1
 fi
 printf "[v] Database saved!\n"
