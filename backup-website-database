@@ -38,14 +38,19 @@ readonly DATABASE_PORT=$(awk -F'=' '/^DATABASE_PORT=/ { print $2}' $CONFIG_FILE)
 readonly DATABASE_HOST=$(awk -F'=' '/^DATABASE_HOST=/ { print $2}' $CONFIG_FILE)
 db_dump_args="--no-tablespaces"
 # fix mariadb mysqldump Couldn't execute 'SELECT COLUMN_NAME, error
-MYSQL_SERVER=$(mysql -u$DATABASE_USER -p$DATABASE_PSW -h ${DATABASE_HOST} -P ${DATABASE_PORT} -e "SELECT VERSION();" | grep -iF "maria")
+MYSQL_SERVER=$(mysql -u$DATABASE_USER -p$DATABASE_PSW -h $DATABASE_HOST -P $DATABASE_PORT -e "SELECT VERSION();" | grep -iF "maria")
 if [ "" != "$MYSQL_SERVER" ]; then
   db_dump_args="--column-statistics=0 --no-tablespaces"
 fi
 echo "--- Step 1/4 ---"
 printf "[ ] Dumping mysql...\n"
-mysqldump -u$DATABASE_USER -p$DATABASE_PSW -h${DATABASE_HOST}:${DATABASE_PORT} ${db_dump_args} $DATABASE_NAME > /tmp/$DATABASE_NAME-dump.sql
-printf "[x] Database saved!\n"
+mysqldump -u$DATABASE_USER -p$DATABASE_PSW -h $DATABASE_HOST -P $DATABASE_PORT $db_dump_args $DATABASE_NAME > /tmp/$DATABASE_NAME-dump.sql
+check_dump=$(cat /tmp/$DATABASE_NAME-dump.sql | tail -1 | grep -iF "completed")
+if [ ""  == "$check_dump" ]; then
+  printf "[x] Dump database failed.\n
+  exit 1
+fi
+printf "[v] Database saved!\n"
 echo "----------------"
 echo ""
 echo "--- Step 2/4 ---"
@@ -53,23 +58,23 @@ if ls ${DEST_PATH}backup-*.tar.xz &>/dev/null
 then
   printf "[ ] Deleting previews backup...\n"
   rm ${DEST_PATH}backup-*
-  printf "[x] Previews backup deleted.\n"
+  printf "[v] Previews backup deleted.\n"
 else
-  printf "[x] No previews backup founds.\n"
+  printf "[v] No previews backup founds.\n"
 fi
 echo "----------------"
 echo ""
 echo "--- Step 3/4 ---"
 printf "[ ] Saving new backup... (this operation will take some minutes)\n"
 tar cJfP ${DEST_PATH}backup-$(date +%d%m%Y-%H%M).tar.xz $excluded $SOURCE_PATH /tmp/$DATABASE_NAME-dump.sql
-printf "[x] Backup file saved.\n"
+printf "[v] Backup file saved.\n"
 echo "----------------"
 echo ""
 echo "--- Step 4/4 ---"
 printf "[ ] Cleaning temp files...\n"
 rm /tmp/$DATABASE_NAME-dump.sql
-printf "[x] Temp files deleted.\n"
+printf "[v] Temp files deleted.\n"
 echo "----------------"
 echo ""
-printf "[x] Backup completed with success!\n"
+printf "[v] Backup completed with success!\n"
 exit 0
