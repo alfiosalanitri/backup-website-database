@@ -26,6 +26,7 @@ fi
 readonly CONFIG_FILE=$1
 readonly SOURCE_PATH=$(awk -F'=' '/^SOURCE_PATH=/ { print $2}' $CONFIG_FILE)
 readonly DEST_PATH=$(awk -F'=' '/^DEST_PATH=/ { print $2}' $CONFIG_FILE)
+readonly KEEP_ALL_BACKUPS=$(awk -F'=' '/^KEEP_ALL_BACKUPS=/ { print $2}' $CONFIG_FILE)
 excluded=''
 #if .excluded file exists into backup destination directory
 if [ -f "${DEST_PATH}.excluded" ]; then
@@ -56,9 +57,13 @@ echo ""
 echo "--- Step 2/4 ---"
 if ls ${DEST_PATH}backup-*.tar.xz &>/dev/null 
 then
-  printf "[ ] Deleting previews backup...\n"
-  rm ${DEST_PATH}backup-*
-  printf "[v] Previews backup deleted.\n"
+  if [ "1" == "$KEEP_ALL_BACKUPS" ]; then
+    printf "[v] Skip deleting old backups.\n"
+  else
+    printf "[ ] Deleting previews backup...\n"
+    rm ${DEST_PATH}backup-*
+    printf "[v] Previews backup deleted.\n"
+  fi
 else
   printf "[v] No previews backup founds.\n"
 fi
