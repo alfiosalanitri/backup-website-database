@@ -39,7 +39,7 @@ readonly DATABASE_HOST=$(awk -F'=' '/^DATABASE_HOST=/ { print $2}' $CONFIG_FILE)
 db_dump_args="--no-tablespaces"
 # fix mariadb mysqldump Couldn't execute 'SELECT COLUMN_NAME, error
 MYSQL_SERVER=$(mysql -u$DATABASE_USER -p$DATABASE_PSW -h $DATABASE_HOST -P $DATABASE_PORT -e "SELECT VERSION();" | grep -iF "maria")
-if [ "" != "$MYSQL_SERVER" ]; then
+if [ "" != "$MYSQL_SERVER" ] && [ mysqldump --column-statistics=0 --version &>/dev/null ]; then
   db_dump_args="--column-statistics=0 --no-tablespaces"
 fi
 echo "--- Step 1/4 ---"
