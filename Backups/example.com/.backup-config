@@ -5,3 +5,4 @@ DATABASE_USER=database_user
 DATABASE_PSW=database_password
 DATABASE_HOST=localhost
 DATABASE_PORT=3306
+KEEP_ALL_BACKUPS=1
