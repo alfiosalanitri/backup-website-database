@@ -71,7 +71,7 @@ echo "----------------"
 echo ""
 echo "--- Step 3/4 ---"
 printf "[ ] Saving new backup... (this operation will take some minutes)\n"
-tar cJfP ${DEST_PATH}backup-$(date +%d%m%Y-%H%M).tar.xz $excluded $SOURCE_PATH /tmp/$DATABASE_NAME-dump.sql
+tar cJfP ${DEST_PATH}backup-$(date +%Y%m%d).tar.xz $excluded $SOURCE_PATH /tmp/$DATABASE_NAME-dump.sql
 printf "[v] Backup file saved.\n"
 echo "----------------"
 echo ""
